@@ -1,0 +1,16 @@
+{
+  "name": "Gringa Champions League",
+  "short_name": "Gringa CL",
+  "description": "Posiciones, fixture, goleadores, vallas, tarjetas y llaves de Libre y Legends.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#00335e",
+  "theme_color": "#00335e",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

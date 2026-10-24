@@ -3,14 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Posiciones, fixture, goleadores, vallas, tarjetas y llaves de la Gringa Champions League (Libre y Legends).">
 <title>Gringa Champions League</title>
+<meta name="description" content="Posiciones, fixture, goleadores, vallas, tarjetas y llaves de la Gringa Champions League (Libre y Legends).">
 <meta property="og:title" content="Gringa Champions League">
 <meta property="og:description" content="Posiciones, fixture, goleadores, vallas, tarjetas y llaves de Libre y Legends.">
-<meta property="og:image" content="https://todalagringa.github.io/marca/toro-naranja.png">
+<meta property="og:image" content="https://todalagringa.github.io/icons/icon-512.png">
 <meta property="og:url" content="https://todalagringa.github.io/">
 <meta name="theme-color" content="#00335e">
-<link rel="icon" href="marca/toro-naranja.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gringa CL">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -671,6 +677,8 @@ fetch("data.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error(r.status
   .catch(()=>{$("#main").innerHTML=`<div class="sheet empty">No se pudieron cargar las estadísticas. Probá recargar la página.</div>`});
 })();
 </script>
+
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}</script>
 
 </body>
 </html>
