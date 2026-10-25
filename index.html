@@ -499,8 +499,9 @@ const FORMATS={
       N("s1","Semifinal",1,W_("q1"),W_("q2"),"Semi 1"),N("s2","Semifinal",1,W_("q3"),W_("q4"),"Semi 2"),
       N("f","Final",1,W_("s1"),W_("s2"),"Final"),N("t3","Tercer puesto",1,L_("s1"),L_("s2"),"3er puesto")],
     "Copa Revancha":[
-      N("c1","Cuartos de final",2,L_("o1"),L_("o2"),"CR 1"),N("c2","Cuartos de final",2,L_("o3"),L_("o4"),"CR 2"),
-      N("c3","Cuartos de final",2,L_("o5"),L_("o6"),"CR 3"),N("c4","Cuartos de final",2,L_("o7"),L_("o8"),"CR 4"),
+      /* Cruces 1-2, 3-4, 5-6 y 7-8 entre perdedores de octavos (numeración de las llaves de ZC) */
+      N("c1","Cuartos de final",2,L_("o1"),L_("o3"),"CR 1"),N("c2","Cuartos de final",2,L_("o5"),L_("o7"),"CR 2"),
+      N("c3","Cuartos de final",2,L_("o2"),L_("o4"),"CR 3"),N("c4","Cuartos de final",2,L_("o6"),L_("o8"),"CR 4"),
       N("cs1","Semifinal",1,W_("c1"),W_("c2"),"Semi 1"),N("cs2","Semifinal",1,W_("c3"),W_("c4"),"Semi 2"),
       N("cf","Final",1,W_("cs1"),W_("cs2"),"Final")]}},
   "legends-12":{
@@ -512,8 +513,9 @@ const FORMATS={
       N("s1","Semifinal",2,W_("q1"),W_("q2"),"Semi 1"),N("s2","Semifinal",2,W_("q3"),W_("q4"),"Semi 2"),
       N("f","Final",1,W_("s1"),W_("s2"),"Final"),N("t3","Tercer puesto",1,L_("s1"),L_("s2"),"3er puesto")],
     "Copa Revancha":[
-      N("c1","Cuartos de final",1,R_(1),S_("12"),"CR 1"),N("c2","Cuartos de final",1,R_(4),S_("9"),"CR 2"),
-      N("c3","Cuartos de final",1,R_(2),S_("11"),"CR 3"),N("c4","Cuartos de final",1,R_(3),S_("10"),"CR 4"),
+      /* Perdedor de la llave 1 (1°-8°) vs 12°, llave 4 (3°-6°) vs 9°, llave 2 (4°-5°) vs 11°, llave 3 (2°-7°) vs 10° */
+      N("c1","Cuartos de final",1,L_("q1"),S_("12"),"CR 1"),N("c2","Cuartos de final",1,L_("q4"),S_("9"),"CR 2"),
+      N("c3","Cuartos de final",1,L_("q2"),S_("11"),"CR 3"),N("c4","Cuartos de final",1,L_("q3"),S_("10"),"CR 4"),
       N("cs1","Semifinal",1,W_("c1"),W_("c2"),"Semi 1"),N("cs2","Semifinal",1,W_("c3"),W_("c4"),"Semi 2"),
       N("cf","Final",1,W_("cs1"),W_("cs2"),"Final")]}}
 };
