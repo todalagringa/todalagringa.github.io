@@ -144,6 +144,8 @@ tr.lead td.pos{color:var(--accent-text)}
 .side .who span{overflow-wrap:anywhere}
 .score{font-family:var(--f-display);font-weight:800;font-size:24px;line-height:1;padding-top:1px;text-align:center;min-width:72px}
 .score small{display:block;font:600 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:5px}
+.score.sched{font-size:20px;color:var(--ink);padding-top:2px;letter-spacing:0}
+.score .when{text-transform:none;letter-spacing:.02em}
 .score.pending{font-size:12px;color:var(--muted);padding-top:6px;letter-spacing:.08em}
 .ev{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
 .card{display:inline-block;width:8px;height:11px;border-radius:1.5px;vertical-align:-1px;margin-right:4px}
@@ -346,20 +348,23 @@ function matchCard(m,{label}={}){
   const win=m.win&&m.win!=="?"?m.win:null;
   return `<article class="match">
     <div class="side home"><div class="who">${teamBtn(m.home)}</div><div class="ev">${evList(m,m.home)}</div></div>
-    <div class="score num ${p?"":"pending"}">${p?`${m.hg}<span style="opacity:.4"> – </span>${m.ag}`:(m.phase==="regular"&&m.round<lastRound(T())?"Postergado":"Por jugar")}${label?`<small>${esc(label)}</small>`:""}${m.pen?`<small>Penales ${esc(m.pen)}</small>`:""}${win&&p&&m.hg===m.ag?`<small>Pasa ${esc(win)}</small>`:""}</div>
+    <div class="score num ${p?"":"pending"} ${!p&&m.time&&!(m.phase==="regular"&&m.round<lastRound(T()))?"sched":""}">${p?`${m.hg}<span style="opacity:.4"> – </span>${m.ag}`:(m.phase==="regular"&&m.round<lastRound(T())?"Postergado":m.time?esc(m.time):"Por jugar")}${m.time||m.cancha?`<small class="when">${p&&m.time?esc(m.time)+" · ":""}${esc(m.cancha||"")}</small>`:""}${label?`<small>${esc(label)}</small>`:""}${m.pen?`<small>Penales ${esc(m.pen)}</small>`:""}${win&&p&&m.hg===m.ag?`<small>Pasa ${esc(win)}</small>`:""}</div>
     <div class="side away"><div class="who">${teamBtn(m.away)}</div><div class="ev">${evList(m,m.away)}</div></div>
     ${m.phase==="regular"&&m.inst&&T().groups.length>1?`<div class="mfoot"><span class="tag ${m.inst==="Interzonal"?"iz":""}">${esc(m.inst)}</span></div>`:""}
     ${m.obs?`<div class="mfoot"><span class="note">${esc(m.obs)}</span></div>`:p&&!m.ev.some(e=>e[2]==="G")&&(m.hg+m.ag)>0?`<div class="mfoot"><span class="note">Sin goleadores cargados</span></div>`:""}
   </article>`;
 }
+function fmtDay(iso){const d=new Date(iso+"T12:00:00");if(isNaN(d))return "";
+  return ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][d.getDay()]+" "+d.getDate()+"/"+(d.getMonth()+1)}
 function vFixture(t){
   const reg=regular(t);const rounds=[...new Set(reg.map(m=>m.round))].sort((a,b)=>a-b);
   if(!rounds.length)return `<div class="sheet empty">Todavía no hay fixture cargado.</div>`;
   if(S.round==null||!rounds.includes(S.round))S.round=lastRound(t)||rounds[0];
-  const ms=reg.filter(m=>m.round===S.round);
+  const ms=reg.filter(m=>m.round===S.round).sort((a,b)=>(a.time||"99").localeCompare(b.time||"99")||(a.cancha||"").localeCompare(b.cancha||"",undefined,{numeric:true}));
+  const day=(ms.find(m=>m.date)||{}).date;
   const lr=lastRound(t);const done=r=>r<lr||reg.filter(m=>m.round===r).every(played);
   return `<section class="view">
-    <div class="sec-h"><h2>Fecha ${S.round}</h2><span class="hint">${ms.filter(played).length} de ${ms.length} jugados</span></div>
+    <div class="sec-h"><h2>Fecha ${S.round}</h2><span class="hint">${day?fmtDay(day)+" · ":""}${ms.filter(played).length} de ${ms.length} jugados</span></div>
     <div class="rounds" role="group" aria-label="Elegir fecha" style="margin-block:10px 12px">${rounds.map(r=>`<button data-round="${r}" class="num ${done(r)?"done":""}" aria-pressed="${r===S.round}">${r}</button>`).join("")}</div>
     <div class="sheet">${ms.map(m=>matchCard(m)).join("")}</div></section>`;
 }
