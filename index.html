@@ -253,6 +253,18 @@ dialog::backdrop{background:rgba(5,15,10,.55)}
 .bbox.prov{border-style:dashed}
 .bcol{width:204px}
 .aggline{padding:9px 14px;border-top:1px dashed var(--line);background:var(--sunk);font-size:12.5px;color:var(--muted);text-align:center}
+.pedbox{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.pedbox .note{margin-top:2px}
+.pedbtn{border:0;border-radius:999px;background:var(--accent);color:#fff;padding:10px 18px;font:700 13px var(--f-display);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-flex;justify-content:center}
+.pedbtn:disabled{background:var(--sunk);color:var(--muted);cursor:default}
+.pedbtn.wide{width:100%;padding:13px}
+.pform{gap:6px}
+.pform label,.pform .plabel{font:700 11px var(--f-display);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+.pform select,.pform textarea{width:100%;font:500 14px var(--f-body);padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--sunk);color:var(--ink)}
+.pchips{display:flex;flex-wrap:wrap;gap:6px}
+.pchips button{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font:600 12.5px var(--f-body);cursor:pointer}
+.pchips button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.pprev{margin:0;white-space:pre-wrap;font:500 13px var(--f-body);background:var(--sunk);border-radius:8px;padding:10px 12px;border-left:4px solid #25d366}
 .det summary{cursor:pointer;font-weight:700;color:var(--t-link);padding:4px 0}
 .soon{position:relative;overflow:hidden;padding:44px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
 .soon img{width:92px;height:auto;opacity:.9}
@@ -285,6 +297,7 @@ footer{color:var(--t-sub);font-size:12.5px;text-align:center;padding-bottom:28px
 <footer class="wrap"><a class="igfoot" href="https://www.instagram.com/todalagringa/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>Seguinos en Instagram <b>@todalagringa</b></span></a><div id="foot"></div></footer>
 
 <dialog id="team"></dialog>
+<dialog id="pedido"></dialog>
 
 <script>
 (function(){
@@ -364,6 +377,60 @@ function matchCard(m,{label}={}){
 }
 function fmtDay(iso){const d=new Date(iso+"T12:00:00");if(isNaN(d))return "";
   return ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"][d.getDay()]+" "+d.getDate()+"/"+(d.getMonth()+1)}
+
+/* ---------- pedidos de horario (por WhatsApp) ---------- */
+const PEDIDO={wa:"5493464561524",turnos:["13:00","14:00","15:00","16:00"]};
+function arNow(){const d=new Date(Date.now()-3*3600e3);return {day:d.getUTCDay(),h:d.getUTCHours(),iso:d.toISOString().slice(0,10)}}
+function pedidosAbiertos(){const {day,h}=arNow();return (day===6&&h>=19)||day===0||day===1||day===2||(day===3&&h<17)}
+function proximaFecha(t){
+  const {iso,h}=arNow();const reg=regular(t);const lr=lastRound(t);
+  const rounds=[...new Set(reg.map(m=>m.round))].sort((a,b)=>a-b);
+  for(const r of rounds){const ms=reg.filter(m=>m.round===r);if(ms.every(played))continue;
+    const d=(ms.find(m=>m.date)||{}).date;
+    if(d?(d>iso||(d===iso&&h<19)):r>lr)return {n:r,date:d}}
+  return null;
+}
+const PTIPOS=[["solo","Solo a las…",true],["prefiere","Prefiere…",true],["noantes","No puede antes de las…",true],["nodespues","No puede después de las…",true],["primero","Prefiere el primer turno",false],["ultimo","Prefiere el último turno",false]];
+let PD={team:"",tipo:"solo",turno:"14:00",com:""};
+function pedidoLinea(){const h=PD.turno.slice(0,2).replace(/^0/,"");const e=PD.team||"(equipo)";
+  return {solo:`${e} solo ${PD.turno}`,prefiere:`${e} prefiere ${PD.turno}`,noantes:`${e} no puede antes de las ${h}`,nodespues:`${e} no puede después de las ${h}`,primero:`${e} prefiere el primer turno`,ultimo:`${e} prefiere el último turno`}[PD.tipo]}
+function pedidoTexto(t,f){const dia=f.date?` (${fmtDay(f.date).toLowerCase()})`:"";
+  return `*Pedido de horario – Fecha ${f.n}${dia}*\nCategoría: ${t.cat}\n${pedidoLinea()}${PD.com.trim()?`\nComentario: ${PD.com.trim()}`:""}`}
+function pedidoBox(t){
+  const f=proximaFecha(t);if(!f||t.status!=="en curso"||isKO(t))return "";
+  const open=pedidosAbiertos();
+  return `<div class="pedbox"><div><b>¿Necesitás un horario especial para la fecha ${f.n}?</b>
+    <div class="note">${open?"Se reciben pedidos hasta el miércoles a las 17:00.":"Los pedidos ya cerraron. Se vuelven a abrir el sábado a las 19:00."}</div></div>
+    <button class="pedbtn" data-pedido ${open?"":"disabled"}>${open?"Pedir horario":"Pedidos cerrados"}</button></div>`;
+}
+function openPedido(){
+  const t=T();const f=proximaFecha(t);if(!f)return;
+  const teams=t.groups.flatMap(g=>g.teams).sort((a,b)=>a.localeCompare(b));
+  if(!teams.includes(PD.team))PD.team="";
+  const d=$("#pedido");
+  const draw=()=>{const tipo=PTIPOS.find(x=>x[0]===PD.tipo);
+    const url=`https://wa.me/${PEDIDO.wa}?text=${encodeURIComponent(pedidoTexto(t,f))}`;
+    d.innerHTML=`<div class="dlg-h"><h3>Pedir horario · Fecha ${f.n}</h3><button class="close" aria-label="Cerrar" data-pclose>×</button></div>
+    <form class="dlg-b pform" id="pform">
+      <label for="p-team">Equipo</label>
+      <select id="p-team"><option value="">Elegí tu equipo</option>${teams.map(n=>`<option ${n===PD.team?"selected":""}>${esc(n)}</option>`).join("")}</select>
+      <div class="plabel">Pedido</div>
+      <div class="pchips">${PTIPOS.map(([k,l])=>`<button type="button" data-ptipo="${k}" aria-pressed="${k===PD.tipo}">${esc(l)}</button>`).join("")}</div>
+      ${tipo[2]?`<div class="plabel">Turno</div><div class="pchips">${PEDIDO.turnos.map(h=>`<button type="button" data-pturno="${h}" aria-pressed="${h===PD.turno}">${h}</button>`).join("")}</div>`:""}
+      <label for="p-com">Comentario (opcional)</label>
+      <textarea id="p-com" rows="2" maxlength="200" placeholder="Ej: tenemos jugadores que llegan tarde">${esc(PD.com)}</textarea>
+      <div class="plabel">Mensaje que se va a enviar</div>
+      <pre class="pprev">${esc(pedidoTexto(t,f))}</pre>
+      ${PD.team?`<a class="pedbtn wide" href="${url}" target="_blank" rel="noopener">Enviar por WhatsApp</a>`:`<button type="button" class="pedbtn wide" disabled>Elegí tu equipo para enviar</button>`}
+      <p class="note">Se abre WhatsApp con el mensaje listo para enviar.</p>
+    </form>`;
+    $("#p-team").onchange=e=>{PD.team=e.target.value;draw()};
+    $("#p-com").oninput=e=>{PD.com=e.target.value;d.querySelector(".pprev").textContent=pedidoTexto(t,f);const a=d.querySelector("a.pedbtn");if(a)a.href=`https://wa.me/${PEDIDO.wa}?text=${encodeURIComponent(pedidoTexto(t,f))}`};
+  };
+  d.onclick=e=>{const b=e.target.closest("button");if(e.target===d){d.close();return}if(!b)return;
+    if(b.dataset.ptipo){PD.tipo=b.dataset.ptipo;draw()}else if(b.dataset.pturno){PD.turno=b.dataset.pturno;draw()}else if(b.hasAttribute("data-pclose"))d.close()};
+  draw();try{d.showModal()}catch(e){d.setAttribute("open","")}
+}
 function vFixture(t){
   const reg=regular(t);const rounds=[...new Set(reg.map(m=>m.round))].sort((a,b)=>a-b);
   if(!rounds.length)return `<div class="sheet empty">Todavía no hay fixture cargado.</div>`;
@@ -373,6 +440,7 @@ function vFixture(t){
   const lr=lastRound(t);const done=r=>r<lr||reg.filter(m=>m.round===r).every(played);
   return `<section class="view">
     <div class="sec-h"><h2>Fecha ${S.round}</h2><span class="hint">${day?fmtDay(day)+" · ":""}${ms.filter(played).length} de ${ms.length} jugados</span></div>
+    ${pedidoBox(t)}
     <div class="rounds" role="group" aria-label="Elegir fecha" style="margin-block:10px 12px">${rounds.map(r=>`<button data-round="${r}" class="num ${done(r)?"done":""}" aria-pressed="${r===S.round}">${r}</button>`).join("")}</div>
     <div class="sheet">${ms.map(m=>matchCard(m)).join("")}</div></section>`;
 }
@@ -675,6 +743,7 @@ document.addEventListener("click",e=>{
   else if(b.dataset.goto){S.tid=b.dataset.goto;S.tab="posiciones";S.round=null;render();window.scrollTo({top:0})}
   else if(b.dataset.team){openTeam(b.dataset.team)}
   else if(b.hasAttribute("data-close")){$("#team").close()}
+  else if(b.hasAttribute("data-pedido")){openPedido()}
 });
 $("#team").addEventListener("click",e=>{if(e.target.id==="team")e.target.close()});
 $("#season").addEventListener("change",e=>{S.tid=e.target.value;S.round=null;render()});
