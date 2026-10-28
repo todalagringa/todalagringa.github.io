@@ -98,6 +98,61 @@ body:not([data-screen="stats"]) .stats-only{display:none!important}
 body:not([data-screen="inicio"]) #home{display:none}
 body:not([data-screen="club"]) #club{display:none}
 body:not([data-screen="forvia"]) #forvia{display:none}
+body:not([data-screen="fotos"]) #fotos{display:none}
+.picado{width:100%;margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;border-radius:16px;padding:18px 20px;background:#0b2a4a;border:1px solid #25d366;color:#fff}
+.picado h2{color:#fff;margin:4px 0 4px;font:900 20px var(--f-display);text-transform:uppercase;line-height:1.1}
+.picado p{margin:0;font-size:13.5px;opacity:.9}
+.picado .hk{color:#5be38f;opacity:1}
+.pic-btn{flex:none;display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#0b2414;text-decoration:none;border-radius:999px;padding:12px 18px;font:800 14px var(--f-display);white-space:nowrap}
+.pic-btn:hover{background:#3ee07a}
+@media (max-width:620px){.picado{flex-direction:column;align-items:stretch;text-align:center}.pic-btn{justify-content:center}}
+
+:root[data-torneo="fotospage"]{--t-bg:#121212}
+.hcards .hc-fotos{grid-column:1/-1;flex-direction:row;align-items:center;gap:16px;background:#ffb100;color:#1b1b1b}
+.hc-fotos .hcam{flex:none;width:64px;height:64px;border-radius:14px;background:rgba(0,0,0,.1);display:grid;place-items:center}
+.hc-fotos .hfx{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.hc-fotos .hgo{margin:0;flex:none}
+@media (max-width:620px){.hc-fotos .hgo{display:none}}
+.hc-fotos{--wm:url(marca/toro-negro.webp)}
+.hcard.hc-fotos::after{opacity:.12;width:104px;height:104px;right:14px;transform:translateY(-50%)}
+.fhero{padding-bottom:18px}
+.fhero .ttitle{margin-top:14px}
+.fcred{display:inline-flex;align-items:center;gap:8px;color:#ffb100;text-decoration:none;font-size:15px}
+.fcred b{color:#fff}
+.falb{margin-bottom:22px}
+.falb-h{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:12px}
+.falb-h h2{margin:2px 0 0;font:900 24px var(--f-display);text-transform:uppercase;color:#fff;line-height:1.05}
+.falb-h small{display:block;color:#bdbdbd;font-size:13px;margin-top:2px}
+.fkick{font:800 11px var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:#ffb100}
+.fdrive{display:inline-flex;align-items:center;gap:8px;background:#ffb100;color:#111;text-decoration:none;border-radius:999px;padding:10px 16px;font:800 13px var(--f-display);letter-spacing:.03em;white-space:nowrap}
+.fdrive:hover{background:#ffc53d}
+.fgt{margin:16px 0 8px;font:800 13px var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:#ffcf66}
+.fgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+@media (min-width:620px){.fgrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}}
+.fgrid button{border:0;padding:0;margin:0;background:#1d1d1d;aspect-ratio:1;cursor:zoom-in;overflow:hidden;border-radius:4px}
+.fgrid img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .2s}
+.fgrid button:hover img{transform:scale(1.04)}
+.fempty{background:#181818;border:1px dashed #3a3a3a;border-radius:14px;padding:22px;text-align:center;color:#cfcfcf}
+.fprev{display:flex;flex-direction:column;gap:8px}
+.fprev h3{margin:8px 0 4px;font:800 12px var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:#bdbdbd}
+.frow{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#181818;border:1px solid #2a2a2a;border-radius:12px;padding:12px 14px;color:#fff;text-decoration:none}
+.frow:hover{border-color:#ffb100}
+.frow b{font:800 16px var(--f-display);text-transform:uppercase}
+.frow small{display:block;color:#bdbdbd;font-size:12.5px}
+.frow span.go{color:#ffb100;font:800 12px var(--f-display);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.lb{position:fixed;inset:0;z-index:50;background:#000;display:flex;flex-direction:column;color:#fff;touch-action:pan-y}
+.lb[hidden]{display:none}
+.lbtop{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:max(10px,env(safe-area-inset-top)) 12px 10px;font:700 13px var(--f-display)}
+.lbact{display:flex;gap:8px}
+.lbbtn{display:inline-flex;align-items:center;gap:6px;border:1px solid #555;background:transparent;color:#fff;border-radius:999px;padding:8px 14px;font:700 13px var(--f-display);text-decoration:none;cursor:pointer}
+.lbx{padding:8px 12px}
+.lbstage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 8px}
+.lbstage img{max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;transition:transform .2s}
+.lbnav{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:64px;border:0;border-radius:10px;background:rgba(255,255,255,.08);color:#fff;font-size:34px;line-height:1;cursor:pointer}
+.lbp{left:8px}.lbn{right:8px}
+@media (hover:none){.lbnav{display:none}}
+.lbcred{align-self:center;margin:10px 0 max(14px,env(safe-area-inset-bottom));color:#ffb100;text-decoration:none;font:700 13px var(--f-display)}
+
 :root[data-torneo="clubpage"]{--t-bg:#121212}
 .homebtn{border:1px solid color-mix(in srgb,currentColor 40%,transparent);background:transparent;color:inherit;border-radius:999px;padding:7px 12px;font:700 12px var(--f-display);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
 .hwrap,.twrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -197,6 +252,16 @@ main.stats-only,footer.stats-only{position:relative;z-index:1}
 .tlink:hover span{text-decoration:underline}
 .higs{margin-top:28px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px}
 .higs .hig{margin-top:0}
+.prensa{width:100%;max-width:520px;margin-top:26px;text-align:center}
+.prensa p{margin:0 0 8px;font-size:12px;color:#fff;opacity:.7}
+.prgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.prcard{display:flex;align-items:center;gap:8px;padding:8px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;text-decoration:none;text-align:left;min-width:0}
+.prcard img{height:32px;width:34px;flex:none;object-fit:contain;filter:brightness(0) invert(1)}
+.prcard div{display:flex;flex-direction:column;min-width:0}
+.prcard b{font-size:13px;line-height:1.2;white-space:nowrap}
+.prcard span{display:inline-flex;align-items:center;gap:4px;font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prcard svg{flex:none}
+
 .tsmall{font-size:13px;color:#9f9f9f!important;max-width:42ch}
 .tcta .tbtn:not(.twa){background:transparent;color:#e8cf8f;box-shadow:inset 0 0 0 1px #c9a24a}
 .spons{width:100%;margin-top:30px;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -204,11 +269,14 @@ main.stats-only,footer.stats-only{position:relative;z-index:1}
 .spons-stats{margin:0 0 10px}
 .spons-stats .spk{color:var(--t-sub)}
 .spgrid{width:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.spons:not(.spons-stats) .spgrid{display:flex;flex-wrap:wrap;justify-content:center}
+.spons:not(.spons-stats) .sptile{width:calc(20% - 8px)}
 @media (max-width:560px){.spgrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.sptile{height:46px;padding:4px 6px}}
 .sptile{height:58px;display:flex;align-items:center;justify-content:center;padding:6px 10px;min-width:0}
-.spons-stats .spgrid{grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;max-width:760px}
+.spons-stats .spgrid{grid-template-columns:repeat(9,minmax(0,1fr));gap:6px;max-width:760px}
 .spons-stats .sptile{height:44px;padding:4px}
 @media (max-width:560px){.spons-stats .sptile{height:30px;padding:2px}}
+.sptile.sm img{width:88%}
 .sptile img{display:block;width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1);opacity:.92}
 .spons-stats .sptile img{filter:brightness(0);opacity:.75}
 :root[data-torneo="copa"] .spons-stats .sptile img,:root[data-torneo="nocturno"] .spons-stats .sptile img,:root[data-torneo="mundialito"] .spons-stats .sptile img{filter:brightness(0) invert(1);opacity:.9}
@@ -394,6 +462,34 @@ dialog::backdrop{background:rgba(5,15,10,.55)}
 .soon .chip{font:700 11px var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-text);border:1px solid var(--accent);border-radius:999px;padding:4px 10px}
 footer{color:var(--t-sub);font-size:12.5px;text-align:center;padding-bottom:28px}
 @media (prefers-reduced-motion:no-preference){.view{animation:in .18s ease-out}@keyframes in{from{transform:translateY(4px)}to{transform:none}}}
+/* inicio compacto en celular */
+@media (max-width:620px){
+.hwrap{padding-block:22px 28px}
+.hlogo img{width:min(190px,52vw)}
+.hseason{margin-top:12px;padding:5px 14px;font-size:12px}
+.hslogan{margin:10px 0 2px;font-size:19px}
+.hsub{margin:0 0 14px;font-size:13px}
+.hcards{gap:10px}
+.hcard{display:grid;grid-template-columns:46px 1fr;align-items:center;column-gap:14px;row-gap:2px;padding:14px 16px;border-radius:14px}
+.hcard>img,.hcard>.hcam{grid-row:1/3;height:46px;width:46px;object-fit:contain;margin:0}
+.hcard>.hk{align-self:end}.hcard>.hn{align-self:start}
+.hc-fotos .hfx{grid-row:1/3}
+.hcard .hd,.hcard .hgo{display:none}
+.hcard .hn{font-size:18px}
+.hcard .hk{font-size:10.5px}
+.hcard::after{width:140px;height:140px}
+.hc-fotos .hcam{width:46px;height:46px;border-radius:12px}
+.hc-fotos .hcam svg{width:30px;height:30px}
+.hcard.hc-fotos::after{width:74px;height:74px;right:10px}
+.picado{margin-top:10px;padding:14px 16px;gap:10px}
+.picado h2{font-size:17px}
+.picado p{font-size:13px}
+.pic-btn{padding:10px 16px;font-size:13px}
+.prensa{margin-top:18px}
+.spons{margin-top:18px}
+.spons:not(.spons-stats) .sptile{height:38px}
+.higs{margin-top:16px}
+}
 </style>
 
 <section id="home" class="screen-home" aria-label="Inicio">
@@ -424,12 +520,42 @@ footer{color:var(--t-sub);font-size:12.5px;text-align:center;padding-bottom:28px
         <span class="hd">Academia de fútbol de formación para niños a partir de 4 años.</span>
         <span class="hgo">Conocé más ›</span>
       </button>
+      <button class="hcard hc-fotos" data-screen="fotos">
+        <span class="hcam"><svg viewBox="0 0 24 24" width="44" height="44" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="4"/></svg></span>
+        <span class="hfx"><span class="hk">Banco de fotos</span>
+        <span class="hn">Fotos del torneo</span>
+        <span class="hd">Las fotos de la última fecha para ver y descargar.</span></span>
+        <span class="hgo">Ver fotos ›</span>
+      </button>
     </div>
-    <section class="spons" aria-label="Sponsors"><div class="spgrid"><div class="sptile"><img src="sponsors/club-la-gringa.png" alt="Club Atlético La Gringa" loading="lazy"></div><div class="sptile"><img src="sponsors/12-pasos.png" alt="12 Pasos, Liga Casildense" loading="lazy"></div><div class="sptile"><img src="sponsors/smirnoff.png" alt="Smirnoff" loading="lazy"></div><div class="sptile"><img src="sponsors/santa-fe.png" alt="Cerveza Santa Fe" loading="lazy"></div><div class="sptile"><img src="sponsors/villavicencio.png" alt="Villavicencio" loading="lazy"></div><div class="sptile"><img src="sponsors/full-sport.png" alt="Full Sport" loading="lazy"></div><div class="sptile"><img src="sponsors/senado-santa-fe.png" alt="Cámara de Senadores de la Provincia de Santa Fe" loading="lazy"></div><div class="sptile"><img src="sponsors/don-miguel.png" alt="Carnicería Don Miguel" loading="lazy"></div></div></section>
+    <section class="picado" aria-label="Alquiler de cancha">
+      <div class="pic-tx"><span class="hk">Sábados a la tarde</span>
+      <h2>¿Querés jugar un picado con amigos?</h2>
+      <p>Te alquilamos una cancha en el predio de La Gringa.</p></div>
+      <a class="pic-btn" id="picado-wa" href="https://wa.me/5493464589210?text=Hola%20Zapa!%20Quiero%20alquilar%20una%20cancha%20para%20jugar%20un%20picado%20el%20s%C3%A1bado." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20.5l1.6-5.3A8.4 8.4 0 1 1 21 11.5z"/></svg><span>Hablar con el Zapa</span></a>
+    </section>
+    <section class="prensa" aria-label="Prensa amiga"><p>Noticias del torneo y de la Liga Casildense de Fútbol</p><div class="prgrid"><a class="prcard" href="https://www.instagram.com/12pasoslcf/" target="_blank" rel="noopener"><img src="sponsors/12-pasos.png" alt="12 Pasos" loading="lazy"><div><b>12 Pasos</b><span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>@12pasoslcf</span></div></a><a class="prcard" href="https://www.instagram.com/latomboliga/" target="_blank" rel="noopener"><img src="sponsors/la-tombo-liga.png" alt="La Tombo Liga" loading="lazy"><div><b>La Tombo Liga</b><span><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>@latomboliga</span></div></a></div></section>
+    <section class="spons" aria-label="Sponsors"><div class="spgrid"><div class="sptile"><img src="sponsors/club-la-gringa.png" alt="Club Atlético La Gringa" loading="lazy"></div><div class="sptile"><img src="sponsors/la-tombo-liga.png" alt="La Tombo Liga" loading="lazy"></div><div class="sptile"><img src="sponsors/12-pasos.png" alt="12 Pasos, Liga Casildense" loading="lazy"></div><div class="sptile sm"><img src="sponsors/smirnoff.png" alt="Smirnoff" loading="lazy"></div><div class="sptile"><img src="sponsors/santa-fe.png" alt="Cerveza Santa Fe" loading="lazy"></div><div class="sptile"><img src="sponsors/villavicencio.png" alt="Villavicencio" loading="lazy"></div><div class="sptile"><img src="sponsors/full-sport.png" alt="Full Sport" loading="lazy"></div><div class="sptile"><img src="sponsors/senado-santa-fe.png" alt="Cámara de Senadores de la Provincia de Santa Fe" loading="lazy"></div><div class="sptile"><img src="sponsors/don-miguel.png" alt="Carnicería Don Miguel" loading="lazy"></div></div></section>
     <div class="higs"><a class="hig" href="https://www.instagram.com/clubatleticolagringa/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>@clubatleticolagringa</span></a>
     <a class="hig" href="https://www.instagram.com/todalagringa/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>@todalagringa</span></a></div>
   </div>
 </section>
+<section id="fotos" class="screen-train" aria-label="Fotos del torneo">
+  <div class="twrap">
+    <button class="tback" data-screen="inicio">‹ Inicio</button>
+    <div class="thero fhero">
+      <h1 class="ttitle">Fotos del torneo</h1>
+      <a class="fcred" id="fcred" href="https://www.instagram.com/jjc.film/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>Fotos: <b>@jjc.film</b></span></a>
+    </div>
+    <div id="fbody"></div>
+  </div>
+</section>
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Foto">
+  <div class="lbtop"><span id="lbn"></span><span class="lbact"><a id="lbdl" class="lbbtn" download aria-label="Descargar foto"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg><span>Descargar</span></a><button class="lbbtn lbx" data-lb="x" aria-label="Cerrar">✕</button></span></div>
+  <div class="lbstage" id="lbstage"><img id="lbimg" alt=""></div>
+  <button class="lbnav lbp" data-lb="-1" aria-label="Foto anterior">‹</button><button class="lbnav lbn" data-lb="1" aria-label="Foto siguiente">›</button>
+  <a class="lbcred" href="https://www.instagram.com/jjc.film/" target="_blank" rel="noopener">📸 @jjc.film</a>
+</div>
 <section id="club" class="screen-train club" aria-label="Club Atlético La Gringa">
   <div class="twrap">
     <button class="tback" data-screen="inicio">‹ Inicio</button>
@@ -517,7 +643,7 @@ footer{color:var(--t-sub);font-size:12.5px;text-align:center;padding-bottom:28px
 <main class="wrap stats-only" id="main" aria-live="polite">
   <div class="sheet empty">Cargando el torneo…</div>
 </main>
-<footer class="wrap stats-only"><section class="spons spons-stats" aria-label="Sponsors"><div class="spgrid"><div class="sptile"><img src="sponsors/club-la-gringa.png" alt="Club Atlético La Gringa" loading="lazy"></div><div class="sptile"><img src="sponsors/12-pasos.png" alt="12 Pasos, Liga Casildense" loading="lazy"></div><div class="sptile"><img src="sponsors/smirnoff.png" alt="Smirnoff" loading="lazy"></div><div class="sptile"><img src="sponsors/santa-fe.png" alt="Cerveza Santa Fe" loading="lazy"></div><div class="sptile"><img src="sponsors/villavicencio.png" alt="Villavicencio" loading="lazy"></div><div class="sptile"><img src="sponsors/full-sport.png" alt="Full Sport" loading="lazy"></div><div class="sptile"><img src="sponsors/senado-santa-fe.png" alt="Cámara de Senadores de la Provincia de Santa Fe" loading="lazy"></div><div class="sptile"><img src="sponsors/don-miguel.png" alt="Carnicería Don Miguel" loading="lazy"></div></div></section><a class="igfoot" href="https://www.instagram.com/todalagringa/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>Seguinos en Instagram <b>@todalagringa</b></span></a><div id="foot"></div></footer>
+<footer class="wrap stats-only"><section class="spons spons-stats" aria-label="Sponsors"><div class="spgrid"><div class="sptile"><img src="sponsors/club-la-gringa.png" alt="Club Atlético La Gringa" loading="lazy"></div><div class="sptile"><img src="sponsors/la-tombo-liga.png" alt="La Tombo Liga" loading="lazy"></div><div class="sptile"><img src="sponsors/12-pasos.png" alt="12 Pasos, Liga Casildense" loading="lazy"></div><div class="sptile sm"><img src="sponsors/smirnoff.png" alt="Smirnoff" loading="lazy"></div><div class="sptile"><img src="sponsors/santa-fe.png" alt="Cerveza Santa Fe" loading="lazy"></div><div class="sptile"><img src="sponsors/villavicencio.png" alt="Villavicencio" loading="lazy"></div><div class="sptile"><img src="sponsors/full-sport.png" alt="Full Sport" loading="lazy"></div><div class="sptile"><img src="sponsors/senado-santa-fe.png" alt="Cámara de Senadores de la Provincia de Santa Fe" loading="lazy"></div><div class="sptile"><img src="sponsors/don-miguel.png" alt="Carnicería Don Miguel" loading="lazy"></div></div></section><a class="igfoot" href="https://www.instagram.com/todalagringa/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>Seguinos en Instagram <b>@todalagringa</b></span></a><div id="foot"></div></footer>
 
 <dialog id="team"></dialog>
 <dialog id="pedido"></dialog>
@@ -981,14 +1107,44 @@ function boot(d){
   $("#foot").textContent=DATA.updated?`Datos actualizados al ${DATA.updated}`:"";
   if(document.body.dataset.screen==="stats")render();
 }
+
+let FOTOS=null,LB={i:0};
+function loadFotos(){if(FOTOS){renderFotos();return}
+  fetch("fotos.json",{cache:"no-store"}).then(r=>r.json()).then(d=>{FOTOS=d;renderFotos()}).catch(()=>{$("#fbody").innerHTML='<div class="fempty">No se pudieron cargar las fotos. Probá recargar la página.</div>'})}
+function renderFotos(){const d=FOTOS,a=d.actual;let h="";
+  const drive=(u,t)=>`<a class="fdrive" href="${esc(u)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>${t}</a>`;
+  if(a&&a.fotos.length){
+    h+=`<section class="falb"><div class="falb-h"><div><div class="fkick">Última fecha · ${a.fotos.length} fotos</div><h2>${esc(a.titulo)}</h2>${a.sub?`<small>${esc(a.sub)}</small>`:""}</div>${drive(a.drive,"Ver todas en Drive")}</div>`;
+    let g=null,open=false;
+    a.fotos.forEach((f,i)=>{if((f.g||null)!==g){if(open)h+="</div>";g=f.g||null;if(g)h+=`<div class="fgt">${esc(g)}</div>`;h+='<div class="fgrid">';open=true}
+      h+=`<button data-foto="${i}" aria-label="Ver foto ${i+1}"><img src="${a.dir}/t/${f.f}" alt="" loading="lazy" decoding="async" width="${f.w}" height="${f.h}"></button>`});
+    if(open)h+="</div>";h+="</section>";
+  }else h+=`<div class="fempty falb">Muy pronto vas a ver acá las fotos de la última fecha.</div>`;
+  if(d.anteriores&&d.anteriores.length){h+=`<section class="fprev"><h3>Fechas anteriores</h3>`+d.anteriores.map(x=>`<a class="frow" href="${esc(x.drive)}" target="_blank" rel="noopener"><span><b>${esc(x.titulo)}</b>${x.sub?`<small>${esc(x.sub)}</small>`:""}</span><span class="go">Ver fotos en Drive ›</span></a>`).join("")+`</section>`}
+  $("#fbody").innerHTML=h}
+function lbShow(i){const a=FOTOS.actual,n=a.fotos.length;LB.i=(i+n)%n;const f=a.fotos[LB.i],src=`${a.dir}/${f.f}`;
+  $("#lbimg").src=src;$("#lbdl").href=src;$("#lbdl").setAttribute("download",`la-gringa-${(a.titulo||"foto").toLowerCase().replace(/[^a-z0-9]+/g,"-")}-${f.f.replace(".webp","")}.webp`);
+  $("#lbn").textContent=`${LB.i+1} / ${n}`;
+  [1,-1].forEach(k=>{const g=a.fotos[(LB.i+k+n)%n];new Image().src=`${a.dir}/${g.f}`})}
+function lbOpen(i){$("#lb").hidden=false;document.documentElement.style.overflow="hidden";lbShow(i)}
+function lbClose(){$("#lb").hidden=true;document.documentElement.style.overflow=""}
+document.addEventListener("click",e=>{const t=e.target.closest("[data-foto]");if(t){lbOpen(+t.dataset.foto);return}
+  const l=e.target.closest("[data-lb]");if(l){l.dataset.lb==="x"?lbClose():lbShow(LB.i+(+l.dataset.lb))}});
+document.addEventListener("keydown",e=>{if($("#lb").hidden)return;if(e.key==="Escape")lbClose();else if(e.key==="ArrowRight")lbShow(LB.i+1);else if(e.key==="ArrowLeft")lbShow(LB.i-1)});
+{let x0=null,y0=0;const st=$("#lbstage");
+  st.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  st.addEventListener("touchmove",e=>{if(x0===null)return;const dx=e.touches[0].clientX-x0;$("#lbimg").style.transform=`translateX(${dx}px)`},{passive:true});
+  st.addEventListener("touchend",e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;$("#lbimg").style.transform="";
+    if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy))lbShow(LB.i+(dx<0?1:-1));else if(dy>90&&Math.abs(dy)>Math.abs(dx))lbClose();x0=null});
+  st.addEventListener("click",e=>{if(e.target===st)lbClose()})}
 function show(sc){
   document.body.dataset.screen=sc;
   if(sc==="stats"){if(DATA)render();try{history.replaceState(null,"","#"+S.tab)}catch(_){}}
-  else{document.documentElement.dataset.torneo={forvia:"academia",club:"clubpage"}[sc]||"inicio";
+  else{document.documentElement.dataset.torneo={forvia:"academia",club:"clubpage",fotos:"fotospage"}[sc]||"inicio";if(sc==="fotos")loadFotos();
     try{history.replaceState(null,"",sc==="inicio"?location.pathname+location.search:"#"+sc)}catch(_){}}
   window.scrollTo({top:0});
 }
-{const h=location.hash.slice(1);show(ALL_TABS.some(([k])=>k===h)?"stats":h==="club"||h==="entrenamientos"?"club":h==="forvia"?"forvia":"inicio")}
+{const h=location.hash.slice(1);show(ALL_TABS.some(([k])=>k===h)?"stats":h==="club"||h==="entrenamientos"?"club":h==="forvia"?"forvia":h==="fotos"?"fotos":"inicio")}
 fetch("data.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(boot)
   .catch(()=>{$("#main").innerHTML=`<div class="sheet empty">No se pudieron cargar las estadísticas. Probá recargar la página.</div>`});
 })();
