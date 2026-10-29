@@ -338,6 +338,7 @@ tr.lead td.pos{color:var(--accent-text)}
 .side .who{display:flex;align-items:center;gap:8px;font-weight:700;min-width:0}
 .side.away .who{flex-direction:row-reverse}
 .side .who span{overflow-wrap:anywhere}
+@media (max-width:420px){.side .who span.longw{font-size:12.5px;letter-spacing:-.01em}}
 .score{font-family:var(--f-display);font-weight:800;font-size:24px;line-height:1;padding-top:1px;text-align:center;min-width:72px}
 .score small{display:block;font:600 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:5px}
 .score.sched{font-size:20px;color:var(--ink);padding-top:2px;letter-spacing:0}
@@ -670,7 +671,7 @@ function initials(name){const w=norm(name).replace(/\b(F\.?C\.?|DEP\.?|DEPORTIVO
 function crest(name){const c=DATA.crests||{};const url=c[S.cat+"|"+name]||c[name];
   if(url)return `<span class="crest img"><img src="${esc(url)}" alt="" loading="lazy"></span>`;
   return `<span class="crest" aria-hidden="true" style="background:hsl(${hue(name)} 42% 34%)">${esc(initials(name))}</span>`}
-const teamBtn=n=>`<button class="teambtn" data-team="${esc(n)}">${crest(n)}<span>${esc(n)}</span></button>`;
+const teamBtn=n=>`<button class="teambtn" data-team="${esc(n)}">${crest(n)}<span${n.split(" ").some(w=>w.length>=11)?' class="longw"':""}>${esc(n)}</span></button>`;
 
 /* ---------- cálculos ---------- */
 const T=()=>DATA.tournaments.find(t=>t.id===S.tid);
