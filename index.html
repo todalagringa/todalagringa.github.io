@@ -676,7 +676,7 @@ const teamBtn=n=>`<button class="teambtn" data-team="${esc(n)}">${crest(n)}<span
 const T=()=>DATA.tournaments.find(t=>t.id===S.tid);
 const played=m=>m.hg!=null&&m.ag!=null;
 const regular=t=>t.matches.filter(m=>m.phase==="regular");
-function lastRound(t){let r=0;for(const m of regular(t))if(played(m))r=Math.max(r,m.round);return r}
+function lastRound(t){let r=0;for(const m of regular(t))if(played(m)&&!/no se presenta/i.test(m.obs||""))r=Math.max(r,m.round);return r}
 function standings(t){
   const row={};for(const g of t.groups)for(const n of g.teams)row[n]={team:n,group:g.name,pj:0,pg:0,pe:0,pp:0,gf:0,gc:0,pts:0,form:[]};
   const ms=regular(t).filter(played).sort((a,b)=>a.round-b.round);
