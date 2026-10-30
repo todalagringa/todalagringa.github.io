@@ -410,6 +410,16 @@ dialog::backdrop{background:rgba(5,15,10,.55)}
 .dlg-h .crest{width:40px;height:40px;font-size:15px}
 .close{border:0;background:color-mix(in srgb,var(--brand-ink) 18%,transparent);color:inherit;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:20px;line-height:1}
 .dlg-b{padding:14px 16px 18px;display:flex;flex-direction:column;gap:14px}
+.rank.click{cursor:pointer}
+.rank.click:hover{background:color-mix(in srgb,var(--accent,#e66d00) 7%,transparent)}
+.rank.click{grid-template-columns:34px 1fr auto 10px}
+.rank .chev{font-style:normal;opacity:.45;font-size:20px}
+.mini.pl .r{font:800 18px var(--f-display);color:inherit;display:flex;flex-direction:column;line-height:1}
+.mini.pl .r small{font:700 10px var(--f-body);color:var(--muted);text-transform:uppercase}
+.mini.pl b{display:block}
+.plt{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+.plt img{width:18px;height:18px;object-fit:contain}
+
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .stats div{background:var(--sunk);border-radius:8px;padding:8px;text-align:center}
 .stats b{display:block;font:800 18px var(--f-display)}
@@ -1032,14 +1042,30 @@ function vHistorial(){
     <div class="sheet" style="margin-top:10px">${palm.length?palm.map(x=>`<div class="palm"><div><div class="tn">${esc(x.t.name)}</div><div class="cp">${esc(x.c)}</div></div>
       <div class="w">${x.s.winner?`${crest(x.s.winner)}<span>${esc(x.s.winner)}</span>`:`<span class="pill yel">A confirmar</span>`}</div></div>`).join(""):`<div class="empty">Todavía no hay finales jugadas.</div>`}</div></section>
   <section class="view"><div class="sec-h"><h2>Goleadores históricos</h2><span class="hint">Suma de todos los torneos cargados</span></div>
-    <div style="margin-top:10px">${rankList("hist"+S.cat,top,(s,i)=>`<div class="rank ${i<3?"top3":""}"><div class="n num">${i+1}</div>
+    <div style="margin-top:10px">${rankList("hist"+S.cat,top,(s,i)=>`<div class="rank click ${i<3?"top3":""}" role="button" tabindex="0" data-player="${esc(norm(s.p))}" aria-label="Ver detalle de ${esc(nice(s.p))}"><div class="n num">${i+1}</div>
       <div class="who"><b>${esc(nice(s.p))}</b><span>${esc([...s.teams].join(", "))} · ${s.ts.size} ${s.ts.size===1?"torneo":"torneos"}</span></div>
-      <div class="val num">${s.g}<small>goles</small></div></div>`,10)}</div></section>
+      <div class="val num">${s.g}<small>goles</small></div><i class="chev">›</i></div>`,10)}</div></section>
   <section class="view"><div class="sec-h"><h2>Torneos</h2></div>
     <div class="sheet" style="margin-top:10px">${totals.map(x=>`<div class="palm"><div><div class="tn">${esc(x.t.name)}</div><div class="cp">${x.pj} partidos · ${x.g} goles · ${x.pj?(x.g/x.pj).toFixed(1).replace(".",","):0} por partido</div></div>
       <button class="linkbtn" data-goto="${esc(x.t.id)}">Ver torneo</button></div>`).join("")}</div></section>`;
 }
 
+
+/* ---------- ficha de goleador (historial) ---------- */
+function openPlayer(key){
+  const ts=DATA.tournaments.filter(t=>t.cat===S.cat);let name="",tot=0;const rows=[];
+  for(const t of ts){const by=new Map();for(const e of goalEvents(t)){if(norm(e.p)!==key)continue;name=name||e.p;const x=by.get(e.team)||{team:e.team,g:0,ms:new Set()};x.g+=e.n;x.ms.add(e.m.id);by.set(e.team,x)}
+    for(const x of by.values()){rows.push({t,...x});tot+=x.g}}
+  if(!rows.length)return;
+  const teams=[...new Set(rows.map(r=>r.team))],nt=new Set(rows.map(r=>r.t.id)).size;
+  const d=$("#team");
+  d.innerHTML=`<div class="dlg-h">${crest(teams[0])}<h3>${esc(nice(name))}</h3><button class="close" aria-label="Cerrar" data-close>×</button></div>
+  <div class="dlg-b"><div class="stats"><div><b class="num">${tot}</b><span>Goles</span></div><div><b class="num">${nt}</b><span>${nt===1?"Torneo":"Torneos"}</span></div><div><b class="num">${teams.length}</b><span>${teams.length===1?"Equipo":"Equipos"}</span></div></div>
+  <div><h3 style="margin-bottom:6px">Goles por torneo · ${esc(S.cat)}</h3>${rows.map(r=>`<div class="mini pl"><span class="r num">${r.g}<small>${r.g===1?"gol":"goles"}</small></span><span><b>${esc(r.t.name)}</b><small class="plt">${crest(r.team)}${esc(r.team)}</small></span><span class="note">${r.ms.size} ${r.ms.size===1?"partido":"partidos"} con gol</span></div>`).join("")}</div></div>`;
+  try{d.showModal()}catch(e){d.setAttribute("open","")}
+}
+document.addEventListener("click",e=>{const r=e.target.closest("[data-player]");if(r)openPlayer(r.dataset.player)});
+document.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches&&e.target.matches("[data-player]")){e.preventDefault();openPlayer(e.target.dataset.player)}});
 /* ---------- ficha de equipo ---------- */
 function openTeam(name){
   const t=T();const ms=t.matches.filter(m=>m.home===name||m.away===name).sort((a,b)=>(a.phase===b.phase?0:a.phase==="regular"?-1:1)||(a.round||0)-(b.round||0));
