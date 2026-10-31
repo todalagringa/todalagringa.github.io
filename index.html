@@ -338,6 +338,8 @@ tr.lead td.pos{color:var(--accent-text)}
 .side .who{display:flex;align-items:center;gap:8px;font-weight:700;min-width:0}
 .side.away .who{flex-direction:row-reverse}
 .side .who span{overflow-wrap:anywhere}
+tr.ret td{opacity:.55}
+.rettag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;border:1px solid currentColor;font:700 10px var(--f-display);letter-spacing:.06em;text-transform:uppercase;vertical-align:middle}
 @media (max-width:420px){.side .who span.longw{font-size:12.5px;letter-spacing:-.01em}}
 .score{font-family:var(--f-display);font-weight:800;font-size:24px;line-height:1;padding-top:1px;text-align:center;min-width:72px}
 .score small{display:block;font:600 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:5px}
@@ -694,7 +696,8 @@ function standings(t){
   for(const m of ms){for(const [me,op,gf,gc] of [[m.home,m.away,m.hg,m.ag],[m.away,m.home,m.ag,m.hg]]){
     const r=row[me];if(!r)continue;r.pj++;r.gf+=gf;r.gc+=gc;
     if(gf>gc){r.pg++;r.pts+=3;r.form.push("W")}else if(gf===gc){r.pe++;r.pts+=1;r.form.push("D")}else{r.pp++;r.form.push("L")}}}
-  const sort=a=>a.sort((x,y)=>y.pts-x.pts||(y.gf-y.gc)-(x.gf-x.gc)||y.gf-x.gf||x.team.localeCompare(y.team));
+  const ret=t.retired||{};for(const n in row)row[n].ret=ret[n]||null;
+  const sort=a=>a.sort((x,y)=>(!!x.ret-!!y.ret)||y.pts-x.pts||(y.gf-y.gc)-(x.gf-x.gc)||y.gf-x.gf||x.team.localeCompare(y.team));
   return t.groups.map(g=>({name:g.name,rows:sort(g.teams.map(n=>row[n]))}));
 }
 const inStats=m=>m.phase==="regular"||m.comp==="Zona Campeonato"||m.comp==="Copa";
@@ -711,7 +714,7 @@ function vPosiciones(t){
     <div class="sec-h"><h2>${multi?esc(g.name):"Tabla de posiciones"}</h2><span class="hint">${lastRound(t)?`Tras la fecha ${lastRound(t)}`:"Sin partidos jugados"}</span></div>
     <div class="sheet tscroll" style="margin-top:10px"><table>
     <thead><tr><th>#</th><th class="l">Equipo</th><th>Pts</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th class="hide-sm">GF</th><th class="hide-sm">GC</th><th>DG</th><th class="hide-sm">Últimos</th></tr></thead>
-    <tbody>${g.rows.map((r,i)=>`<tr class="${i===0&&r.pj?"lead":""}"><td class="pos num">${i+1}</td><td class="l">${teamBtn(r.team)}</td>
+    <tbody>${g.rows.map((r,i)=>`<tr class="${i===0&&r.pj?"lead":""}${r.ret?" ret":""}"><td class="pos num">${r.ret?"–":i+1}</td><td class="l">${teamBtn(r.team)}${r.ret?`<span class="rettag">${esc(r.ret)}</span>`:""}</td>
       <td class="pts num">${r.pts}</td><td class="num">${r.pj}</td><td class="num">${r.pg}</td><td class="num">${r.pe}</td><td class="num">${r.pp}</td>
       <td class="num hide-sm">${r.gf}</td><td class="num hide-sm">${r.gc}</td><td class="num">${r.gf-r.gc>0?"+":""}${r.gf-r.gc}</td>
       <td class="hide-sm"><span class="form" aria-label="Últimos resultados">${r.form.slice(-5).map(f=>`<i class="${f}" title="${{W:"Ganó",D:"Empató",L:"Perdió"}[f]}"></i>`).join("")}</span></td></tr>`).join("")}</tbody>
