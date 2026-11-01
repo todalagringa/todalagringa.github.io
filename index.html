@@ -126,6 +126,10 @@ body:not([data-screen="fotos"]) #fotos{display:none}
 .fkick{font:800 11px var(--f-display);letter-spacing:.14em;text-transform:uppercase;color:#ffb100}
 .fdrive{display:inline-flex;align-items:center;gap:8px;background:#ffb100;color:#111;text-decoration:none;border-radius:999px;padding:10px 16px;font:800 13px var(--f-display);letter-spacing:.03em;white-space:nowrap}
 .fdrive:hover{background:#ffc53d}
+.fsel{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:#1d1d1d;border:1px solid #333;color:#cfcfcf;font-size:13.5px;line-height:1.45}
+.fsel b{color:#ffb100}
+.fmore{display:flex;justify-content:center;margin-top:14px}
+.fmore .fdrive{white-space:normal;text-align:center;justify-content:center}
 .fgt{margin:16px 0 8px;font:800 13px var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:#ffcf66}
 .fgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
 @media (min-width:620px){.fgrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}}
@@ -1144,11 +1148,11 @@ function loadFotos(){if(FOTOS){renderFotos();return}
 function renderFotos(){const d=FOTOS,a=d.actual;let h="";
   const drive=(u,t)=>`<a class="fdrive" href="${esc(u)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>${t}</a>`;
   if(a&&a.fotos.length){
-    h+=`<section class="falb"><div class="falb-h"><div><div class="fkick">Última fecha · ${a.fotos.length} fotos</div><h2>${esc(a.titulo)}</h2>${a.sub?`<small>${esc(a.sub)}</small>`:""}</div>${drive(a.drive,"Ver todas en Drive")}</div>`;
-    let g=null,open=false;
+    h+=`<section class="falb"><div class="falb-h"><div><div class="fkick">Última fecha</div><h2>${esc(a.titulo)}</h2>${a.sub?`<small>${esc(a.sub)}</small>`:""}</div>${drive(a.drive,"Ver todas en Drive")}</div><p class="fsel">📸 Acá ves una selección de ${a.fotos.length} fotos. <b>Entrá al Drive para ver todas las fotos de la fecha.</b></p>`;
+    let g,open=false;
     a.fotos.forEach((f,i)=>{if((f.g||null)!==g){if(open)h+="</div>";g=f.g||null;if(g)h+=`<div class="fgt">${esc(g)}</div>`;h+='<div class="fgrid">';open=true}
       h+=`<button data-foto="${i}" aria-label="Ver foto ${i+1}"><img src="${a.dir}/t/${f.f}" alt="" loading="lazy" decoding="async" width="${f.w}" height="${f.h}"></button>`});
-    if(open)h+="</div>";h+="</section>";
+    if(open)h+="</div>";h+=`<div class="fmore">${drive(a.drive,"Ver todas las fotos de la fecha en Drive")}</div></section>`;
   }else h+=`<div class="fempty falb">Muy pronto vas a ver acá las fotos de la última fecha.</div>`;
   if(d.anteriores&&d.anteriores.length){h+=`<section class="fprev"><h3>Fechas anteriores</h3>`+d.anteriores.map(x=>`<a class="frow" href="${esc(x.drive)}" target="_blank" rel="noopener"><span><b>${esc(x.titulo)}</b>${x.sub?`<small>${esc(x.sub)}</small>`:""}</span><span class="go">Ver fotos en Drive ›</span></a>`).join("")+`</section>`}
   $("#fbody").innerHTML=h}
