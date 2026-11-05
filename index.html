@@ -802,6 +802,7 @@ function openPedido(){
     if(b.dataset.ptipo){PD.tipo=b.dataset.ptipo;draw()}else if(b.dataset.pturno){PD.turno=b.dataset.pturno;draw()}else if(b.hasAttribute("data-pclose"))d.close()};
   draw();try{d.showModal()}catch(e){d.setAttribute("open","")}
 }
+
 function vFixture(t){
   const reg=regular(t);const po=t.matches.filter(m=>m.phase==="playoff"&&m.fround);
   const rnd=m=>m.phase==="regular"?m.round:m.fround;const all=[...reg,...po];
@@ -853,9 +854,10 @@ function vVallas(t){
     <div class="val num">${r.prom.toFixed(2).replace(".",",")}<small>por partido</small></div></div>`,20)}</div></section>`;
 }
 function suspensions(t){
-  const last=lastRound(t);const out=[];
-  for(const c of cardsOf(t)){if(c.k!=="R"||c.m.phase!=="regular")continue;
-    const until=c.m.round+c.n;out.push({...c,from:c.m.round+1,until,pending:until>last})}
+  const rn=m=>m.phase==="regular"?m.round:m.fround;
+  const last=Math.max(lastRound(t),...t.matches.filter(m=>m.phase==="playoff"&&m.fround&&played(m)).map(m=>m.fround));const out=[];
+  for(const c of cardsOf(t)){if(c.k!=="R"||!rn(c.m))continue;
+    const prov=c.n<0;const until=prov?Infinity:rn(c.m)+c.n;out.push({...c,prov,from:rn(c.m)+1,until,pending:until>last})}
   /* Amarillas: cada 3 acumuladas = 1 fecha de suspensión; con 2 (o 5, 8…) el jugador queda en aviso. */
   const order=m=>m.phase==="regular"?m.round:1000+(STAGES.indexOf(m.stage)*3)+(m.leg||0);
   const yel={};for(const c of cardsOf(t)){if(c.k!=="A")continue;const k=norm(c.p)+"|"+c.team;(yel[k]=yel[k]||{p:c.p,team:c.team,list:[]}).list.push(c.m)}
@@ -863,10 +865,10 @@ function suspensions(t){
     y.list.forEach((m,i)=>{if((i+1)%3===0)yt.push(m)});
     const lastTrig=yt[yt.length-1];
     y.n=y.list.length;y.cycle=y.n%3;
-    y.pending=!!lastTrig&&y.cycle===0&&lastTrig.phase==="regular"&&lastTrig.round===last&&t.status!=="finalizado";
+    y.pending=!!lastTrig&&y.cycle===0&&rn(lastTrig)===last&&t.status!=="finalizado";
     y.trig=yt;return y});
   const susYel=[];for(const y of ylist)for(const m of y.trig)susYel.push({p:y.p,team:y.team,m,pending:y.pending&&m===y.trig[y.trig.length-1]});
-  return {last,reds:out.sort((a,b)=>b.m.round-a.m.round),
+  return {last,reds:out.sort((a,b)=>rn(b.m)-rn(a.m)),
     alert:ylist.filter(y=>y.cycle===2).sort((a,b)=>a.team.localeCompare(b.team)||a.p.localeCompare(b.p)),
     susYel:susYel.sort((a,b)=>order(b.m)-order(a.m)),
     yel:ylist.sort((a,b)=>b.n-a.n||a.p.localeCompare(b.p))};
@@ -874,15 +876,16 @@ function suspensions(t){
 function vTarjetas(t){
   const {last,reds,alert,susYel,yel}=suspensions(t);const next=last+1;const fin=t.status==="finalizado";
   const fechas=n=>`${n} ${n===1?"fecha":"fechas"}`;
-  const pend=[...reds.filter(r=>r.pending&&!fin).map(r=>({...r,why:`Roja en fecha ${r.m.round}`,left:r.until-last})),
-              ...susYel.filter(s=>s.pending).map(s=>({...s,k:"A3",why:`3ª amarilla en fecha ${s.m.round}`,left:1,n:1}))];
+  const fl=m=>m.phase==="regular"?`fecha ${m.round}`:`fecha ${m.fround} (${m.stage.replace(" de final","").toLowerCase()}${m.leg===1?" ida":m.leg===2?" vuelta":""})`;
+  const pend=[...reds.filter(r=>r.pending&&!fin).map(r=>({...r,why:`Roja en ${fl(r.m)}`,left:r.until-last})),
+              ...susYel.filter(s=>s.pending).map(s=>({...s,k:"A3",why:`3ª amarilla en ${fl(s.m)}`,left:1,n:1}))];
   const icon=k=>k==="A3"?`<span aria-label="Tres amarillas"><i class="card A"></i><i class="card A"></i><i class="card A"></i></span>`:`<i class="card R" aria-label="Roja"></i>`;
-  const hist=[...reds.map(r=>({...r,label:`Roja · ${fechas(r.n)}`,done:!(r.pending&&!fin)})),
-              ...susYel.map(s=>({...s,k:"A3",label:"3 amarillas · 1 fecha",done:!s.pending}))].sort((a,b)=>(b.m.round||99)-(a.m.round||99));
+  const hist=[...reds.map(r=>({...r,label:r.prov?"Roja · suspensión provisoria, a definir":`Roja · ${fechas(r.n)}`,done:!(r.pending&&!fin)})),
+              ...susYel.map(s=>({...s,k:"A3",label:"3 amarillas · 1 fecha",done:!s.pending}))].sort((a,b)=>((b.m.round||b.m.fround)||99)-((a.m.round||a.m.fround)||99));
   return `${fin?"":`<section class="view"><div class="sec-h"><h2>Suspendidos</h2><span class="hint">${last?`No pueden jugar la fecha ${next}`:""}</span></div>
     <div class="sheet" style="margin-top:10px">${pend.length?pend.map(r=>`<div class="sanc">${icon(r.k)}
       <div><b>${esc(nice(r.p))}</b><div class="d">${esc(r.team)} · ${esc(r.why)}</div></div>
-      <span class="pill red">${r.left===r.n?fechas(r.n):`Le ${r.left===1?"queda":"quedan"} ${fechas(r.left)}`}</span></div>`).join(""):`<div class="empty">No hay jugadores suspendidos.</div>`}</div>
+      <span class="pill red">${r.prov?"Provisoria · a definir":r.left===r.n?fechas(r.n):`Le ${r.left===1?"queda":"quedan"} ${fechas(r.left)}`}</span></div>`).join(""):`<div class="empty">No hay jugadores suspendidos.</div>`}</div>
   </section>
   <section class="view"><div class="sec-h"><h2>En aviso</h2><span class="hint">Con 2 amarillas: una más y se pierden la próxima fecha</span></div>
     <div class="sheet" style="margin-top:10px">${alert.map(y=>`<div class="sanc"><span><i class="card A"></i><i class="card A"></i></span>
