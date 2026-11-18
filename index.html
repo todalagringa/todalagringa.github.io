@@ -478,6 +478,11 @@ dialog::backdrop{background:rgba(5,15,10,.55)}
 .soon{position:relative;overflow:hidden;padding:44px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
 .soon img{width:92px;height:auto;opacity:.9}
 .soon .big{font:900 clamp(26px,8vw,40px) var(--f-display);text-transform:uppercase;letter-spacing:.02em;color:var(--ink);line-height:1}
+.soonteams{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 6px;width:100%;margin-top:14px}
+.soonteams .st{width:calc((100% - 12px)/3);max-width:130px;display:flex;flex-direction:column;align-items:center;gap:7px;text-align:center;font:700 12px/1.15 var(--f-display);color:var(--ink)}
+.soonteams .st .crest{width:56px;height:56px}
+.soonteams .st .crest.img img{width:100%;height:100%;object-fit:contain}
+.soonteams .st span.longw{font-size:10.5px}
 .soon p{margin:0;max-width:40ch;color:var(--muted)}
 .soon .chip{font:700 11px var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-text);border:1px solid var(--accent);border-radius:999px;padding:4px 10px}
 footer{color:var(--t-sub);font-size:12.5px;text-align:center;padding-bottom:28px}
@@ -1123,6 +1128,11 @@ function pickDefault(cat){const ts=DATA.tournaments.filter(t=>t.cat===cat);retur
 function torneoKind(t){const n=norm(t.name);return n.startsWith("COPA")?"copa":n.startsWith("NOCTURNO")?"nocturno":n.startsWith("MUNDIALITO")?"mundialito":"liga"}
 const LOGOS={liga:"marca/toro-naranja.png",copa:"marca/toro-blanco.webp",nocturno:"marca/toro-blanco.webp",mundialito:"marca/toro-naranja.png"};
 function vSoon(t){const label=(ALL_TABS.find(([k])=>k===S.tab)||[,""])[1];
+  const eq=[...(t.confirmed||[])].sort((a,b)=>a.localeCompare(b,"es"));
+  if(eq.length)return `<section class="view"><div class="sheet soon"><img src="marca/toro-naranja.png" alt="">
+    <span class="chip">${esc(S.cat)} · ${esc(t.name)}</span><div class="big">Próximamente</div>
+    <p>Ya están confirmados los ${eq.length} equipos que juegan la copa. Muy pronto vas a ver el formato y los cruces.</p>
+    <div class="soonteams">${eq.map(n=>`<div class="st">${crest(n)}<span${n.split(" ").some(w=>w.length>=11)?' class="longw"':""}>${esc(n)}</span></div>`).join("")}</div></div></section>`;
   return `<section class="view"><div class="sheet soon"><img src="marca/toro-naranja.png" alt="">
     <span class="chip">${esc(S.cat)} · ${esc(t.name)}</span><div class="big">Próximamente</div>
     <p>Este torneo todavía no empezó. Cuando arranque, en ${esc(label)} vas a ver toda la información actualizada fecha a fecha.</p></div></section>`}
