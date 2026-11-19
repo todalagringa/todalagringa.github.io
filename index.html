@@ -483,6 +483,19 @@ dialog::backdrop{background:rgba(5,15,10,.55)}
 .soonteams .st .crest{width:56px;height:56px}
 .soonteams .st .crest.img img{width:100%;height:100%;object-fit:contain}
 .soonteams .st span.longw{font-size:10.5px}
+.soongroups{display:grid;grid-template-columns:1fr;gap:14px;width:100%;margin-top:14px}
+.sgrp{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:12px 8px 14px}
+.sgrp h4{margin:0 0 10px;font:900 15px var(--f-display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.sgrp .soonteams{margin-top:0}
+.sgrp .soonteams .st{width:calc((100% - 6px)/2);max-width:none}
+.sfix{margin-top:12px;border-top:1px solid rgba(255,255,255,.14);padding-top:8px;display:grid;gap:8px;text-align:left}
+.sfr b{display:block;font:900 11px var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-text);margin-bottom:4px;text-align:center}
+.sfm{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;font:700 11.5px/1.1 var(--f-display);color:var(--ink);padding:3px 0}
+.sfm .sl{display:flex;align-items:center;justify-content:flex-end;gap:5px;text-align:right}
+.sfm .sv{display:flex;align-items:center;gap:5px}
+.sfm i{font:700 10px var(--f-display);opacity:.7;font-style:normal}
+.sfm .crest{flex:none;width:22px;height:22px;display:block}
+.sfm .crest.img img{width:22px;height:22px;object-fit:contain;display:block}
 .soon p{margin:0;max-width:40ch;color:var(--muted)}
 .soon .chip{font:700 11px var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-text);border:1px solid var(--accent);border-radius:999px;padding:4px 10px}
 footer{color:var(--t-sub);font-size:12.5px;text-align:center;padding-bottom:28px}
@@ -1127,12 +1140,21 @@ function render(){
 function pickDefault(cat){const ts=DATA.tournaments.filter(t=>t.cat===cat);return (ts.find(t=>t.status==="en curso")||ts.find(t=>t.status==="finalizado")||ts[0]).id}
 function torneoKind(t){const n=norm(t.name);return n.startsWith("COPA")?"copa":n.startsWith("NOCTURNO")?"nocturno":n.startsWith("MUNDIALITO")?"mundialito":"liga"}
 const LOGOS={liga:"marca/toro-naranja.png",copa:"marca/toro-blanco.webp",nocturno:"marca/toro-blanco.webp",mundialito:"marca/toro-naranja.png"};
+function sfix(t,g){const ms=(t.matches||[]).filter(m=>m.inst===g);if(!ms.length)return"";
+  const rs=[...new Set(ms.map(m=>m.round))].sort((a,b)=>a-b);
+  return `<div class="sfix">${rs.map(r=>`<div class="sfr"><b>Fecha ${r}</b>${ms.filter(m=>m.round===r).map(m=>`<div class="sfm"><span class="sl">${esc(m.home)}${crest(m.home)}</span><i>vs</i><span class="sv">${crest(m.away)}${esc(m.away)}</span></div>`).join("")}</div>`).join("")}</div>`}
 function vSoon(t){const label=(ALL_TABS.find(([k])=>k===S.tab)||[,""])[1];
   const eq=[...(t.confirmed||[])].sort((a,b)=>a.localeCompare(b,"es"));
+  const tm=n=>`<div class="st">${crest(n)}<span${n.split(" ").some(w=>w.length>=11)?' class="longw"':""}>${esc(n)}</span></div>`;
+  const gr=t.groups||[];
+  if(gr.length)return `<section class="view"><div class="sheet soon"><img src="marca/toro-naranja.png" alt="">
+    <span class="chip">${esc(S.cat)} · ${esc(t.name)}</span><div class="big">Próximamente</div>
+    <p>Estos son los grupos y el fixture de la fase inicial. Muy pronto vas a ver el formato completo y los horarios.</p>
+    <div class="soongroups">${gr.map(g=>`<div class="sgrp"><h4>${esc(g.name)}</h4><div class="soonteams">${[...g.teams].sort((a,b)=>a.localeCompare(b,"es")).map(tm).join("")}</div>${sfix(t,g.name)}</div>`).join("")}</div></div></section>`;
   if(eq.length)return `<section class="view"><div class="sheet soon"><img src="marca/toro-naranja.png" alt="">
     <span class="chip">${esc(S.cat)} · ${esc(t.name)}</span><div class="big">Próximamente</div>
     <p>Ya están confirmados los ${eq.length} equipos que juegan la copa. Muy pronto vas a ver el formato y los cruces.</p>
-    <div class="soonteams">${eq.map(n=>`<div class="st">${crest(n)}<span${n.split(" ").some(w=>w.length>=11)?' class="longw"':""}>${esc(n)}</span></div>`).join("")}</div></div></section>`;
+    <div class="soonteams">${eq.map(tm).join("")}</div></div></section>`;
   return `<section class="view"><div class="sheet soon"><img src="marca/toro-naranja.png" alt="">
     <span class="chip">${esc(S.cat)} · ${esc(t.name)}</span><div class="big">Próximamente</div>
     <p>Este torneo todavía no empezó. Cuando arranque, en ${esc(label)} vas a ver toda la información actualizada fecha a fecha.</p></div></section>`}
