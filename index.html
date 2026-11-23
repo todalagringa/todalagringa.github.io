@@ -692,7 +692,7 @@ const TABS=[["posiciones","Posiciones"],["fixture","Fixture"],["playoff","Play-o
 const TABS_KO=[["llave","Llave"],["fixture","Fixture"],["goleadores","Goleadores"],["vallas","Valla"],["tarjetas","Tarjetas"],["historial","Historial"]];
 const ALL_TABS=[...TABS,["llave","Llave"]];
 const isKO=t=>!!t&&norm(t.name).startsWith("COPA");
-const tabsFor=t=>isKO(t)?TABS_KO:TABS;
+const tabsFor=t=>isKO(t)&&!(t.groups&&t.groups.length>1)?TABS_KO:TABS;
 const STAGES=["Octavos de final","Cuartos de final","Semifinal","Tercer puesto","Final"];
 let DATA=null, S={cat:"Libre",tid:null,tab:"posiciones",round:null,showAll:{}};
 const $=s=>document.querySelector(s);
@@ -733,6 +733,8 @@ function cardsOf(t){const out=[];for(const m of t.matches)for(const [p,team,k,n]
 function roundLabel(m){return m.phase==="regular"?`Fecha ${m.round}`:`${m.stage}${m.leg?(m.leg===1?" · ida":" · vuelta"):""}`}
 
 /* ---------- vistas ---------- */
+const cmpRow=(x,y)=>y.pts-x.pts||(y.gf-y.gc)-(x.gf-x.gc)||y.gf-x.gf||x.team.localeCompare(y.team);
+function rankSeeds(st,rank){const out=[];for(const [pos,n] of rank)out.push(...st.map(g=>g.rows[pos-1]).filter(Boolean).sort(cmpRow).slice(0,n));return out}
 function vPosiciones(t){
   const st=standings(t);const multi=st.length>1;
   return st.map(g=>`<section class="view">
@@ -743,8 +745,13 @@ function vPosiciones(t){
       <td class="pts num">${r.pts}</td><td class="num">${r.pj}</td><td class="num">${r.pg}</td><td class="num">${r.pe}</td><td class="num">${r.pp}</td>
       <td class="num hide-sm">${r.gf}</td><td class="num hide-sm">${r.gc}</td><td class="num">${r.gf-r.gc>0?"+":""}${r.gf-r.gc}</td>
       <td class="hide-sm"><span class="form" aria-label="Últimos resultados">${r.form.slice(-5).map(f=>`<i class="${f}" title="${{W:"Ganó",D:"Empató",L:"Perdió"}[f]}"></i>`).join("")}</span></td></tr>`).join("")}</tbody>
-    </table></div></section>`).join("")+`<p class="hint">Desempate: puntos, diferencia de gol y goles a favor.${multi?" Los partidos interzonales suman para la tabla de cada equipo.":""}</p>`;
+    </table></div></section>`).join("")+thirdsTable(t,st)+`<p class="hint">Desempate: puntos, diferencia de gol y goles a favor.${multi&&!isKO(t)?" Los partidos interzonales suman para la tabla de cada equipo.":""}</p>`;
 }
+function thirdsTable(t,st){const F=FORMATS[t.format];const th=F&&F.rank&&F.rank.find(([p])=>p===3);if(!th)return "";
+  const rows=st.map(g=>g.rows[2]).filter(Boolean).sort(cmpRow);
+  return `<section class="view"><div class="sec-h"><h2>Mejores terceros</h2><span class="hint">Pasan los ${th[1]} primeros</span></div>
+    <div class="sheet tscroll" style="margin-top:10px"><table><thead><tr><th>#</th><th class="l">Equipo</th><th>Grupo</th><th>Pts</th><th>PJ</th><th>DG</th><th class="hide-sm">GF</th></tr></thead>
+    <tbody>${rows.map((r,i)=>`<tr class="${i<th[1]&&r.pj?"lead":""}"><td class="pos num">${i+1}</td><td class="l">${teamBtn(r.team)}</td><td class="num">${esc(r.group.replace("Grupo ",""))}</td><td class="pts num">${r.pts}</td><td class="num">${r.pj}</td><td class="num">${r.gf-r.gc>0?"+":""}${r.gf-r.gc}</td><td class="num hide-sm">${r.gf}</td></tr>`).join("")}</tbody></table></div></section>`}
 function evList(m,team){
   const g=[],c=[];
   for(const [p,tm,k,n] of m.ev){if(tm!==team)continue;
@@ -981,6 +988,22 @@ const FORMATS={
       N("c3","Cuartos de final",2,L_("o2"),L_("o4"),"CR 3"),N("c4","Cuartos de final",2,L_("o6"),L_("o8"),"CR 4"),
       N("cs1","Semifinal",1,W_("c1"),W_("c2"),"Semi 1"),N("cs2","Semifinal",1,W_("c3"),W_("c4"),"Semi 2"),
       N("cf","Final",1,W_("cs1"),W_("cs2"),"Final")]}},
+  "copa-4x4":{
+    note:"Pasan a la Zona Campeonato el 1° y el 2° de cada grupo. Ranking del 1 al 8: primero los ganadores de grupo y después los segundos (por puntos, diferencia de gol y goles a favor). Cuartos, semis y final a un partido.",
+    rank:[[1,4],[2,4]],
+    comps:{"Zona Campeonato":[
+      N("q1","Cuartos de final",1,S_("1"),S_("8"),"1°-8°"),N("q2","Cuartos de final",1,S_("4"),S_("5"),"4°-5°"),
+      N("q3","Cuartos de final",1,S_("2"),S_("7"),"2°-7°"),N("q4","Cuartos de final",1,S_("3"),S_("6"),"3°-6°"),
+      N("s1","Semifinal",1,W_("q1"),W_("q2"),"Semi 1"),N("s2","Semifinal",1,W_("q3"),W_("q4"),"Semi 2"),
+      N("f","Final",1,W_("s1"),W_("s2"),"Final")]}},
+  "copa-3x4":{
+    note:"Pasan a la Zona Campeonato el 1° y el 2° de cada grupo y los 2 mejores terceros. Ranking del 1 al 8: primero los ganadores de grupo, después los segundos y al final los 2 mejores terceros (por puntos, diferencia de gol y goles a favor). Cuartos, semis y final a un partido.",
+    rank:[[1,3],[2,3],[3,2]],
+    comps:{"Zona Campeonato":[
+      N("q1","Cuartos de final",1,S_("1"),S_("8"),"1°-8°"),N("q2","Cuartos de final",1,S_("4"),S_("5"),"4°-5°"),
+      N("q3","Cuartos de final",1,S_("2"),S_("7"),"2°-7°"),N("q4","Cuartos de final",1,S_("3"),S_("6"),"3°-6°"),
+      N("s1","Semifinal",1,W_("q1"),W_("q2"),"Semi 1"),N("s2","Semifinal",1,W_("q3"),W_("q4"),"Semi 2"),
+      N("f","Final",1,W_("s1"),W_("s2"),"Final")]}},
   "legends-12":{
     note:"Cuartos a un partido, semifinales de ZC a ida y vuelta, finales a un partido. Del 9° al 12° esperan una semana y entran a la Copa Revancha.",
     comps:{
@@ -1000,13 +1023,14 @@ function resolveFormat(t){
   const F=FORMATS[t.format];const st=standings(t);const reg=regular(t);
   const groupsDone=reg.length>0&&reg.every(played);
   const posOf={};st.forEach((g,gi)=>g.rows.forEach((r,i)=>posOf[r.team]=i+1));
-  const seed=k=>{const m=k.match(/^(\d+)([A-Z]?)$/);const pos=+m[1];const g=m[2]?st[m[2].charCodeAt(0)-65]:st[0];
+  const seed=k=>{if(RK){const r=RK[+k-1];return r&&r.pj?r.team:null}const m=k.match(/^(\d+)([A-Z]?)$/);const pos=+m[1];const g=m[2]?st[m[2].charCodeAt(0)-65]:st[0];
     const r=g&&g.rows[pos-1];return r&&r.pj?r.team:null};
   const seedLabel=k=>/[A-Z]$/.test(k)?`${k.slice(0,-1)}° ${k.slice(-1)}`:`${k}°`;
   const po=t.matches.filter(m=>m.phase==="playoff");
   const out={};
   for(const [comp,nodes] of Object.entries(F.comps))for(const n of nodes)out[comp+"/"+n.id]={...n,comp};
   const nodeOf=id=>out["Zona Campeonato/"+id]||out["Copa Revancha/"+id];
+  const RK=F.rank?rankSeeds(st,F.rank):null;
   const findSeries=(n,a,b)=>{const ms=po.filter(m=>m.comp===n.comp&&m.stage===n.stage&&[m.home,m.away].sort().join("|")===[a,b].sort().join("|"));return ms.length?series(ms)[0]:null};
   const memo={};
   const solve=n=>{const key=n.comp+"/"+n.id;if(memo[key])return memo[key];
@@ -1034,7 +1058,7 @@ function projBox(n){
 function vProjected(t){
   const {res,groupsDone,note,last,total}=resolveFormat(t);
   const stOrder=["Octavos de final","Cuartos de final","Semifinal","Final"];
-  return `<section class="view"><div class="sec-h"><h2>Play-off</h2><span class="hint">${groupsDone?"Cruces definidos":`Proyección tras la fecha ${last} de ${total}`}</span></div>
+  return `<section class="view"><div class="sec-h"><h2>Play-off</h2><span class="hint">${groupsDone?"Cruces definidos":last?`Proyección tras la fecha ${last} de ${total}`:"Arranca con la fase de grupos"}</span></div>
     ${groupsDone?"":`<p class="note" style="margin:8px 0 0">Los cruces salen de la tabla actual y pueden cambiar hasta que termine la fase de grupos. Los marcados con línea punteada todavía no están confirmados.</p>`}
     <p class="note" style="margin:6px 0 0">${esc(note)}</p></section>`+
   Object.entries(res).map(([comp,nodes])=>{
