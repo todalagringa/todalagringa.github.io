@@ -335,7 +335,7 @@ tr.lead td.pos{color:var(--accent-text)}
 .rounds button{flex:none;min-width:40px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 10px;font:700 14px var(--f-display);cursor:pointer}
 .rounds button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .rounds button.done::after{content:"";display:block;height:2px;background:var(--accent-text);margin-top:2px;border-radius:2px}
-.match{display:grid;grid-template-columns:1fr auto 1fr;gap:4px 12px;align-items:start;padding:14px 14px 12px;border-top:1px solid var(--line)}
+.match{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:4px 12px;align-items:start;padding:14px 14px 12px;border-top:1px solid var(--line)}
 .match:first-child{border-top:0}
 .side{display:flex;flex-direction:column;gap:6px;min-width:0}
 .side.away{align-items:flex-end;text-align:right}
@@ -348,7 +348,8 @@ tr.lead td.pos{color:var(--accent-text)}
 tr.ret td{opacity:.55}
 .rettag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;border:1px solid currentColor;font:700 10px var(--f-display);letter-spacing:.06em;text-transform:uppercase;vertical-align:middle}
 @media (max-width:420px){.side .who span.longw{font-size:12.5px;letter-spacing:-.01em}}
-.score{font-family:var(--f-display);font-weight:800;font-size:24px;line-height:1;padding-top:1px;text-align:center;min-width:72px}
+.score{font-family:var(--f-display);font-weight:800;font-size:24px;line-height:1;padding-top:1px;text-align:center;min-width:72px;max-width:104px}
+.mfoot .pen{font:700 12px var(--f-display);letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
 .score small{display:block;font:600 11px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:5px}
 .score.sched{font-size:20px;color:var(--ink);padding-top:2px;letter-spacing:0}
 .score .when{text-transform:none;letter-spacing:.02em}
@@ -764,8 +765,9 @@ function matchCard(m,{label,ptag}={}){
   const win=m.win&&m.win!=="?"?m.win:null;
   return `<article class="match">
     <div class="side home"><div class="who">${teamBtn(m.home)}</div><div class="ev">${evList(m,m.home)}</div></div>
-    <div class="score num ${p?"":"pending"} ${!p&&m.time&&!(m.phase==="regular"&&m.round<lastRound(T()))?"sched":""}">${p?`${m.hg}<span style="opacity:.4"> – </span>${m.ag}`:(m.phase==="regular"&&m.round<lastRound(T())?"Postergado":m.time?esc(m.time):"Por jugar")}${m.time||m.cancha?`<small class="when">${p&&m.time?esc(m.time)+" · ":""}${esc(m.cancha||"")}</small>`:""}${label?`<small>${esc(label)}</small>`:""}${m.pen?`<small>Penales ${esc(m.pen)}</small>`:""}${win&&p&&m.hg===m.ag?`<small>Pasa ${esc(win)}</small>`:""}</div>
+    <div class="score num ${p?"":"pending"} ${!p&&m.time&&!(m.phase==="regular"&&m.round<lastRound(T()))?"sched":""}">${p?`${m.hg}<span style="opacity:.4"> – </span>${m.ag}`:(m.phase==="regular"&&m.round<lastRound(T())?"Postergado":m.time?esc(m.time):"Por jugar")}${m.time||m.cancha?`<small class="when">${p&&m.time?esc(m.time)+" · ":""}${esc(m.cancha||"")}</small>`:""}${label?`<small>${esc(label)}</small>`:""}</div>
     <div class="side away"><div class="who">${teamBtn(m.away)}</div><div class="ev">${evList(m,m.away)}</div></div>
+    ${m.pen||(win&&p&&m.hg===m.ag)?`<div class="mfoot"><span class="pen">${m.pen?`Penales: ${esc(m.pen)}`:`Pasa ${esc(win)}`}</span></div>`:""}
     ${ptag&&m.phase==="playoff"?`<div class="mfoot"><span class="tag ${m.comp==="Zona Campeonato"?"zc":"cr"}">${esc(m.comp)} · ${esc(m.stage.replace(" de final",""))}${m.leg===1?" · ida":m.leg===2?" · vuelta":""}</span></div>`:""}
     ${m.phase==="regular"&&m.inst&&T().groups.length>1?`<div class="mfoot"><span class="tag ${m.inst==="Interzonal"?"iz":""}">${esc(m.inst)}</span></div>`:""}
     ${m.obs?`<div class="mfoot"><span class="note">${esc(m.obs)}</span></div>`:p&&!m.ev.some(e=>e[2]==="G")&&(m.hg+m.ag)>0?`<div class="mfoot"><span class="note">Sin goleadores cargados</span></div>`:""}
