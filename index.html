@@ -1157,7 +1157,7 @@ function render(){
   const kind=torneoKind(t);document.documentElement.dataset.torneo=kind;
   $("#logo").src=LOGOS[kind];
   if(t.status==="proximamente"&&S.tab!=="historial"){$("#main").innerHTML=vSoon(t);store("gcl-state",JSON.stringify({cat:S.cat,tid:S.tid,tab:S.tab}));return}
-  const v={llave:vPlayoff,posiciones:vPosiciones,fixture:isKO(t)?vFixtureKO:vFixture,goleadores:vGoleadores,vallas:vVallas,tarjetas:vTarjetas,playoff:vPlayoff,historial:vHistorial}[S.tab];
+  const v={llave:vPlayoff,posiciones:vPosiciones,fixture:tabsFor(t)===TABS_KO?vFixtureKO:vFixture,goleadores:vGoleadores,vallas:vVallas,tarjetas:vTarjetas,playoff:vPlayoff,historial:vHistorial}[S.tab];
   $("#main").innerHTML=v(t);
   store("gcl-state",JSON.stringify({cat:S.cat,tid:S.tid,tab:S.tab}));
 }
