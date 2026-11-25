@@ -1015,16 +1015,17 @@ const FORMATS={
       N("s1","Semifinal",2,W_("q1"),W_("q2"),"Semi 1"),N("s2","Semifinal",2,W_("q3"),W_("q4"),"Semi 2"),
       N("f","Final",1,W_("s1"),W_("s2"),"Final"),N("t3","Tercer puesto",1,L_("s1"),L_("s2"),"3er puesto")],
     "Copa Revancha":[
-      /* Perdedor de la llave 1 (1°-8°) vs 12°, llave 4 (3°-6°) vs 9°, llave 2 (4°-5°) vs 11°, llave 3 (2°-7°) vs 10° */
-      N("c1","Cuartos de final",1,L_("q1"),S_("12"),"CR 1"),N("c2","Cuartos de final",1,L_("q4"),S_("9"),"CR 2"),
-      N("c3","Cuartos de final",1,L_("q2"),S_("11"),"CR 3"),N("c4","Cuartos de final",1,L_("q3"),S_("10"),"CR 4"),
+      /* Eliminados de cuartos ZC ordenados por fase regular: 1° elim. vs 12°, 4° vs 9°, 2° vs 11°, 3° vs 10° */
+      N("c1","Cuartos de final",1,R_(1),S_("12"),"CR 1"),N("c2","Cuartos de final",1,R_(4),S_("9"),"CR 2"),
+      N("c3","Cuartos de final",1,R_(2),S_("11"),"CR 3"),N("c4","Cuartos de final",1,R_(3),S_("10"),"CR 4"),
       N("cs1","Semifinal",1,W_("c1"),W_("c2"),"Semi 1"),N("cs2","Semifinal",1,W_("c3"),W_("c4"),"Semi 2"),
       N("cf","Final",1,W_("cs1"),W_("cs2"),"Final")]}}
 };
 function resolveFormat(t){
   const F=FORMATS[t.format];const st=standings(t);const reg=regular(t);
   const groupsDone=reg.length>0&&reg.every(played);
-  const posOf={};st.forEach((g,gi)=>g.rows.forEach((r,i)=>posOf[r.team]=i+1));
+  const posOf={},rowOf={};st.forEach((g,gi)=>g.rows.forEach((r,i)=>{posOf[r.team]=i+1;rowOf[r.team]=r}));
+  const elimCmp=(x,y)=>posOf[x]-posOf[y]||cmpRow(rowOf[x],rowOf[y]);
   const seed=k=>{if(RK){const r=RK[+k-1];return r&&r.pj?r.team:null}const m=k.match(/^(\d+)([A-Z]?)$/);const pos=+m[1];const g=m[2]?st[m[2].charCodeAt(0)-65]:st[0];
     const r=g&&g.rows[pos-1];return r&&r.pj?r.team:null};
   const seedLabel=k=>/[A-Z]$/.test(k)?`${k.slice(0,-1)}° ${k.slice(-1)}`:`${k}°`;
@@ -1040,8 +1041,8 @@ function resolveFormat(t){
       if(src.seed){return {team:seed(src.seed),label:seedLabel(src.seed),seed:true,prov:!groupsDone}}
       if(src.w||src.l){const sub=solve(nodeOf(src.w||src.l));const want=src.w?sub.winner:sub.loser;
         return {team:want||null,label:(src.w?"Gan. ":"Perd. ")+sub.name,prov:sub.prov&&!want}}
-      if(src.lrank){const qs=["q1","q2","q3","q4"].map(id=>solve(nodeOf(id)));
-        if(qs.every(q=>q.loser)){const ls=qs.map(q=>q.loser).sort((x,y)=>posOf[x]-posOf[y]);return {team:ls[src.lrank-1],label:`${src.lrank}° eliminado ZC`,prov:false}}
+      if(src.lrank){const zc=F.comps["Zona Campeonato"],p0=zc[0].id[0];const qs=zc.filter(n=>n.id[0]===p0&&/^[a-z]\d$/.test(n.id)).map(n=>solve(nodeOf(n.id)));
+        if(qs.every(q=>q.loser)){const ls=qs.map(q=>q.loser).sort(elimCmp);return {team:ls[src.lrank-1],label:`${src.lrank}° eliminado ZC`,prov:false}}
         return {team:null,label:`${src.lrank}° eliminado ZC`,prov:false}}
     };
     const a=side(n.a),b=side(n.b);let ser=null,winner=null,loser=null;
