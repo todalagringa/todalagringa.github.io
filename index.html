@@ -344,7 +344,8 @@ tr.lead td.pos{color:var(--accent-text)}
 .side .who span{overflow-wrap:anywhere}
 .tag.zc{border-color:var(--t-sel,#e66d00);color:var(--t-link,#c25a00)}
 .postg{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--t-link,#c25a00);vertical-align:middle;margin-left:6px}
-.rounds button.po{border-style:dashed}
+
+.rounds button small{display:block;font:600 9px/1 var(--f-body,inherit);letter-spacing:.04em;text-transform:uppercase;opacity:.75;margin-top:1px}
 tr.ret td{opacity:.55}
 .rettag{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:999px;border:1px solid currentColor;font:700 10px var(--f-display);letter-spacing:.06em;text-transform:uppercase;vertical-align:middle}
 @media (max-width:420px){.side .who span.longw{font-size:12.5px;letter-spacing:-.01em}}
@@ -840,11 +841,18 @@ function vFixture(t){
   const day=(ms.find(m=>m.date)||{}).date;
   const lr=lastRound(t);const done=r=>r<=lr&&reg.some(m=>m.round===r)?(r<lr||reg.filter(m=>m.round===r).every(played)):all.filter(m=>rnd(m)===r).every(played);
   const isPO=ms.length&&ms.every(m=>m.phase==="playoff");
+  const ABR=[["Octavos","OF"],["Cuartos","CF"],["Semi","SF"],["Final","F"],["Tercer","F"]];
+  const poTag=r=>{const pm=all.filter(m=>rnd(m)===r&&m.phase==="playoff");if(!pm.length||reg.some(m=>m.round===r))return null;
+    const st=pm.find(m=>m.comp==="Zona Campeonato"&&!/Tercer/.test(m.stage))||pm.find(m=>!/Tercer/.test(m.stage))||pm[0];const ab=(ABR.find(([k])=>st.stage.startsWith(k))||[,"PO"])[1];
+    const legs=all.filter(m=>m.phase==="playoff"&&m.stage===st.stage&&m.comp===st.comp).some(m=>m.leg===2);
+    return {ab,stage:st.stage,leg:legs?(st.leg===2?"vta":"ida"):""}};
+  const rLabel=r=>{const p=poTag(r);return p?`${p.ab}${p.leg?`<small>${p.leg}</small>`:""}`:r};
+  const curTag=poTag(S.round);
   const stg=isPO?[...new Set(ms.map(m=>m.stage+(m.leg===1?" · ida":m.leg===2?" · vuelta":"")))].join(" / "):"";
   return `<section class="view">
-    <div class="sec-h"><h2>Fecha ${S.round}${isPO?` <small class="postg">Play-off</small>`:""}</h2><span class="hint">${day?fmtDay(day)+" · ":""}${stg?esc(stg)+" · ":""}${ms.filter(played).length} de ${ms.length} jugados</span></div>
+    <div class="sec-h"><h2>${curTag?esc(curTag.stage)+(curTag.leg?(curTag.leg==="ida"?" · ida":" · vuelta"):""):`Fecha ${S.round}`}${isPO?` <small class="postg">Play-off</small>`:""}</h2><span class="hint">${day?fmtDay(day)+" · ":""}${stg?esc(stg)+" · ":""}${ms.filter(played).length} de ${ms.length} jugados</span></div>
     ${pedidoBox(t)}
-    <div class="rounds" role="group" aria-label="Elegir fecha" style="margin-block:10px 12px">${rounds.map(r=>`<button data-round="${r}" class="num ${done(r)?"done":""} ${reg.some(m=>m.round===r)?"":"po"}" aria-pressed="${r===S.round}">${r}</button>`).join("")}</div>
+    <div class="rounds" role="group" aria-label="Elegir fecha" style="margin-block:10px 12px">${rounds.map(r=>`<button data-round="${r}" class="num ${done(r)?"done":""} ${reg.some(m=>m.round===r)?"":"po"}" aria-pressed="${r===S.round}" title="${poTag(r)?"Play-off":"Fecha "+r}">${rLabel(r)}</button>`).join("")}</div>
     <div class="sheet">${ms.map(m=>matchCard(m,{ptag:true})).join("")}</div></section>`;
 }
 function vFixtureKO(t){
